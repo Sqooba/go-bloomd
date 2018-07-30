@@ -2,7 +2,7 @@
 Package bloomd provides a client abstraction around the BloomD interface.
 
 Example:
-	client := bloomd.Client{Server: "10.0.0.30:8673"}
+	client := bloomd.NewClient("10.0.0.30:8673")
 	filter := bloomd.Filter{Name: "coolfilter"}
 	if err := bloomd.CreateFilter(filter); err != nil {
 		// handle error
