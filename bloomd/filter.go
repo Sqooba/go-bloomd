@@ -42,6 +42,19 @@ func (f *Filter) Set(key string) (bool, error) {
 	return false, errInvalidResponse(resp)
 }
 
+// Check checks if the key exists in the filter. Returns True/False
+func (f *Filter) Check(key string) (bool, error) {
+	cmd := "c " + f.Name + " " + f.getKey(key)
+	resp, err := f.Conn.SendAndReceive(cmd)
+	if err != nil {
+		return false, err
+	}
+	if resp == "Yes" || resp == "No" {
+		return resp == "Yes", nil
+	}
+	return false, errInvalidResponse(resp)
+}
+
 func (f *Filter) groupCommand(kind string, keys []string) (rs []bool, e error) {
 	cmd := kind + " " + f.Name
 	for _, key := range keys {
