@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// Filter represents a bloom filter
 type Filter struct {
 	Name     string
 	Conn     *Connection
@@ -28,7 +29,7 @@ func (f *Filter) getKey(key string) string {
 	return key
 }
 
-// Adds a new key to the filter. Returns True/False if the key was added
+// Set adds a new key to the filter. Returns True/False if the key was added
 func (f *Filter) Set(key string) (bool, error) {
 	cmd := "s " + f.Name + " " + f.getKey(key)
 	resp, err := f.Conn.SendAndReceive(cmd)
@@ -80,27 +81,27 @@ func (f *Filter) sendCommand(cmd string) error {
 	return nil
 }
 
-// Deletes the filter permanently from the server
+// Drop deletes the filter permanently from the server
 func (f *Filter) Drop() error {
 	return f.sendCommand("drop")
 }
 
-// Closes the filter on the server
+// Close closes the filter on the server
 func (f *Filter) Close() error {
 	return f.sendCommand("close")
 }
 
-// Clears the filter on the server
+// Clear clears the filter on the server
 func (f *Filter) Clear() error {
 	return f.sendCommand("clear")
 }
 
-// Forces the filter to flush to disk
+// Flush forces the filter to flush to disk
 func (f *Filter) Flush() error {
 	return f.sendCommand("flush")
 }
 
-// Returns the info dictionary about the filter
+// Info returns the info dictionary about the filter
 func (f *Filter) Info() (map[string]string, error) {
 	if err := f.Conn.Send("info " + f.Name); err != nil {
 		return nil, err

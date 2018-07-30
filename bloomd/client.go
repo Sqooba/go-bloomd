@@ -1,5 +1,5 @@
 /*
-Provides a client abstraction around the BloomD interface.
+Package bloomd provides a client abstraction around the BloomD interface.
 
 Example:
 	client := bloomd.Client{Server: "10.0.0.30:8673"}
@@ -17,6 +17,7 @@ import (
 	"strings"
 )
 
+// Client struct is the main entry point to interact with a bloomd server.
 // If using multiple BloomD servers, it is recommended to use a BloomD Ring
 // and only use the proxy as the Server field for your client.
 type Client struct {
@@ -28,10 +29,12 @@ type Client struct {
 	HashKeys   bool
 }
 
+// NewClient instanciates a new connection to bloomd
 func NewClient(address string) Client {
 	return Client{Server: address, Conn: &Connection{Server: address}}
 }
 
+// CreateFilter creates a new filter with provided parameters
 func (c *Client) CreateFilter(f *Filter) error {
 	if f.Prob > 0 && f.Capacity < 1 {
 		return errInvalidCapacity
@@ -64,6 +67,7 @@ func (c *Client) CreateFilter(f *Filter) error {
 	return nil
 }
 
+// GetFilter instanciates and returns a filter to further Set and Check keys.
 func (c *Client) GetFilter(name string) *Filter {
 	return &Filter{
 		Name:     name,
@@ -72,7 +76,7 @@ func (c *Client) GetFilter(name string) *Filter {
 	}
 }
 
-// Lists all the available filters
+// ListFilters lists all the available filters
 func (c *Client) ListFilters() (responses map[string]string, err error) {
 	err = c.Conn.Send("list")
 	if err != nil {
@@ -91,7 +95,7 @@ func (c *Client) ListFilters() (responses map[string]string, err error) {
 	return responses, nil
 }
 
-// Instructs server to flush to disk
+// Flush instructs server to flush to disk
 func (c *Client) Flush() error {
 	err := c.Conn.Send("flush")
 	if err != nil {

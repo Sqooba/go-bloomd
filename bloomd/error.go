@@ -1,9 +1,11 @@
 package bloomd
 
+// BloomdError struct
 type BloomdError struct {
 	ErrorString string
 }
 
+// Error returns the internal error representation
 func (err *BloomdError) Error() string {
 	return err.ErrorString
 }
