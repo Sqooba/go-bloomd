@@ -110,3 +110,12 @@ func (c *Client) Flush() error {
 	}
 	return nil
 }
+
+// Close closes the underlying tcp connection.
+func (c *Client) Close() {
+	if c.Conn != nil {
+		if c.Conn.Socket != nil {
+			c.Conn.Socket.Close()
+		}
+	}
+}
