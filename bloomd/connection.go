@@ -10,6 +10,7 @@ import (
 	"time"
 )
 
+// Connection materializes a concrete connection to bloomd
 type Connection struct {
 	Server   string
 	Timeout  time.Duration
@@ -36,7 +37,7 @@ func (c *Connection) createSocket() (err error) {
 	return nil
 }
 
-// Sends a command to the server
+// Send sends a command to the server
 func (c *Connection) Send(cmd string) error {
 	if c.Socket == nil || c.Socket.LocalAddr() == nil {
 		err := c.createSocket()
@@ -57,7 +58,7 @@ func (c *Connection) Send(cmd string) error {
 	return errSendFailed(cmd, strconv.Itoa(c.Attempts))
 }
 
-// Returns a single line from the socket file
+// Read returns a single line from the socket file
 func (c *Connection) Read() (line string, err error) {
 	if c.Socket == nil || c.Socket.LocalAddr() == nil {
 		err := c.createSocket()
@@ -73,7 +74,7 @@ func (c *Connection) Read() (line string, err error) {
 	return strings.TrimRight(l, "\r\n"), nil
 }
 
-// Reads a response block from the server. The servers responses are between
+// ReadBlock reads a response block from the server. The servers responses are between
 // `start` and `end` which can be optionally provided. Returns an array of
 // the lines within the block.
 func (c *Connection) ReadBlock() (lines []string, err error) {
@@ -98,7 +99,7 @@ func (c *Connection) ReadBlock() (lines []string, err error) {
 	return lines, nil
 }
 
-// Convenience wrapper around `send` and `read`. Sends a command,
+// SendAndReceive is a convenience wrapper around `send` and `read`. Sends a command,
 // and reads the response, performing a retry if necessary.
 func (c *Connection) SendAndReceive(cmd string) (string, error) {
 	err := c.Send(cmd)

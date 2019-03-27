@@ -9,7 +9,7 @@ import (
 func TestDropEverything(t *testing.T) {
 	client := NewClient(serverAddress)
 	filters, _ := client.ListFilters()
-	for f, _ := range filters {
+	for f := range filters {
 		filter := Filter{Name: f, Conn: client.Conn}
 		filter.Drop()
 	}
